@@ -1,6 +1,6 @@
 {
-  "name": "GooMee.PWA",
-  "short_name": "GooMee.PWA",
+  "name": "GooMee",
+  "short_name": "GooMee",
   "start_url": "./",
   "display": "standalone",
   "background_color": "#ffffff",

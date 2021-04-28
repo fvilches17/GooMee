@@ -45,6 +45,6 @@ a, .btn-link {
     #blazor-error-ui .dismiss {
         cursor: pointer;
         position: absolute;
-        right: 0.75rem;
+        right: 3rem;
         top: 0.5rem;
     }
