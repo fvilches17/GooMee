@@ -1,5 +1,4 @@
 ﻿@page "/"
-@inject IJSRuntime _js;
 
 @if (_isClipboardApiSupported)
 {
@@ -18,9 +17,12 @@ else
 	private IJSObjectReference? _clipboardJsModule;
 	private bool _isClipboardApiSupported;
 
-	protected override async Task OnInitializedAsync()
+	[Inject]
+    IJSRuntime Js { get; set; } = null!;
+
+    protected override async Task OnInitializedAsync()
 	{
-		_clipboardJsModule = await _js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
+		_clipboardJsModule = await Js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
 		_isClipboardApiSupported = await _clipboardJsModule!.InvokeAsync<bool>("isClipboardApiSupported");
 	}
 
