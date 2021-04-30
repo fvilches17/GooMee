@@ -1,4 +1,12 @@
 ﻿@page "/"
 
-<h1>GooMee</h1>
-<p>Coming soon...</p>
+<section>
+    <p>@_guid</p>
+    <button @onclick="GenerateNewGuid">Generate</button>
+</section>
+
+@code 
+{
+    private Guid _guid = Guid.NewGuid();
+    protected void GenerateNewGuid() => _guid = Guid.NewGuid();
+}
