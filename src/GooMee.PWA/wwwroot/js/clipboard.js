@@ -1,7 +1,7 @@
-﻿export async function copy(text) {
-    try {
-        await navigator.clipboard.writeText(text);
-    } catch (error) {
-        console.error(`Could not copy text to clipboard: ${error}`);
-    }
-}
+﻿export function isClipboardApiSupported() {
+    return navigator.clipboard !== undefined;
+};
+
+export async function writeToClipboard(text) {
+    await navigator.clipboard.writeText(text);
+};

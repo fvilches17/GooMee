@@ -1,22 +1,29 @@
 ﻿@page "/"
 @inject IJSRuntime _js;
 
-<section>
-    <p>@_guid</p>
-    <button @onclick="@GenerateGuid">Generate</button>
-    <button @onclick="@CopyGuidToClipboardAsync">Copy</button>
-</section>
-
-@code 
+@if (_isClipboardApiSupported)
 {
-    private Guid _guid = Guid.NewGuid();
-    private IJSObjectReference? _clipboardJsModule;
+	<p>@_guid</p>
+	<button @onclick="@GenerateGuid">Generate</button>
+	<button @onclick="@WriteGuidToClipboardAsync">Copy</button>
+}
+else
+{
+	<p>Clipboard API not supported... Upgrade your browser or application environment.</p>
+}
 
-    protected override async Task OnInitializedAsync()
-    {
-        _clipboardJsModule = await _js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
-    }
+@code
+{
+	private Guid _guid = Guid.NewGuid();
+	private IJSObjectReference? _clipboardJsModule;
+	private bool _isClipboardApiSupported;
 
-    protected void GenerateGuid() => _guid = Guid.NewGuid();
-    protected async Task CopyGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("copy", _guid);
+	protected override async Task OnInitializedAsync()
+	{
+		_clipboardJsModule = await _js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
+		_isClipboardApiSupported = await _clipboardJsModule!.InvokeAsync<bool>("isClipboardApiSupported");
+	}
+
+	protected void GenerateGuid() => _guid = Guid.NewGuid();
+	protected async Task WriteGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guid);
 }
