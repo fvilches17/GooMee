@@ -10,7 +10,6 @@
 @code 
 {
     private Guid _guid = Guid.NewGuid();
-    protected void GenerateGuid() => _guid = Guid.NewGuid();
     private IJSObjectReference? _clipboardJsModule;
 
     protected override async Task OnInitializedAsync()
@@ -18,5 +17,6 @@
         _clipboardJsModule = await _js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
     }
 
-    public async Task CopyGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("copy", _guid);
+    protected void GenerateGuid() => _guid = Guid.NewGuid();
+    protected async Task CopyGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("copy", _guid);
 }
