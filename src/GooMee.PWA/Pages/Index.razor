@@ -1,12 +1,22 @@
 ﻿@page "/"
+@inject IJSRuntime _js;
 
 <section>
     <p>@_guid</p>
-    <button @onclick="GenerateNewGuid">Generate</button>
+    <button @onclick="@GenerateGuid">Generate</button>
+    <button @onclick="@CopyGuidToClipboardAsync">Copy</button>
 </section>
 
 @code 
 {
     private Guid _guid = Guid.NewGuid();
-    protected void GenerateNewGuid() => _guid = Guid.NewGuid();
+    protected void GenerateGuid() => _guid = Guid.NewGuid();
+    private IJSObjectReference? _clipboardJsModule;
+
+    protected override async Task OnInitializedAsync()
+    {
+        _clipboardJsModule = await _js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
+    }
+
+    public async Task CopyGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("copy", _guid);
 }
