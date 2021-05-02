@@ -2,36 +2,41 @@
 
 @if (_isClipboardApiSupported)
 {
-	<p>@_guid</p>
-	<button @onclick="@GenerateGuid">Generate</button>
-	<button @onclick="@WriteGuidToClipboardAsync">Copy</button>
+	<p @onclick=@GenerateGuid onselectstart="return false">@_guidDisplayText</p>
 }
 else
 {
-	<p>@_clipboardApiNotSupportedMessage</p>
+	<p>@_clipboardApiNotSupportedDisplayText</p>
 }
 
 @code
 {
-	private Guid _guid = Guid.NewGuid();
+    private bool _isClipboardApiSupported;
+    private string? _clipboardApiNotSupportedDisplayText;
+	private string? _guidDisplayText;
 	private IJSObjectReference? _clipboardJsModule;
-	private bool _isClipboardApiSupported;
-    private string? _clipboardApiNotSupportedMessage;
 
 	[Inject]
-    private IJSRuntime Js { get; set; } = null!;
+	private IJSRuntime Js { get; set; } = null!;
 
-    protected override async Task OnInitializedAsync()
+	protected override async Task OnInitializedAsync()
 	{
 		_clipboardJsModule = await Js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
 		_isClipboardApiSupported = await _clipboardJsModule!.InvokeAsync<bool>("isClipboardApiSupported");
-        if (!_isClipboardApiSupported)
-        {
-            _clipboardApiNotSupportedMessage = "Clipboard API not supported... Upgrade your browser.";
-        }
-        
+
+		if (_isClipboardApiSupported)
+		{
+			_guidDisplayText = "Tap or click to generate and copy";
+		}
+		else
+		{
+			_clipboardApiNotSupportedDisplayText = "Clipboard API not supported... Upgrade your browser.";
+		}
 	}
 
-	protected void GenerateGuid() => _guid = Guid.NewGuid();
-	protected async Task WriteGuidToClipboardAsync() => await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guid);
+	protected async Task GenerateGuid()
+	{
+		_guidDisplayText = Guid.NewGuid().ToString();
+		await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guidDisplayText);
+	}
 }
