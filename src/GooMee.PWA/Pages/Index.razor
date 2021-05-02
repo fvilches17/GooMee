@@ -2,7 +2,7 @@
 
 @if (_isClipboardApiSupported)
 {
-	<p @onclick=@GenerateGuidAsync onselectstart="return false">@_guidDisplayText</p>
+	<p class="cursor-copy" @onclick=@GenerateGuidAsync onselectstart="return false">@_guidDisplayText</p>
 }
 else
 {
@@ -26,7 +26,7 @@ else
 
 		if (_isClipboardApiSupported)
 		{
-			_guidDisplayText = "Tap or click to generate and copy";
+			_guidDisplayText = "Tap or click to generate & copy";
 		}
 		else
 		{
