@@ -2,7 +2,7 @@
 
 @if (_isClipboardApiSupported)
 {
-	<p class="cursor-copy" @onclick=@GenerateGuidAsync onselectstart="return false">@_guidDisplayText</p>
+	<p class="cursor-copy" @onclick=@OnGuidRequestAsync onselectstart="return false">@_guidDisplayText</p>
 }
 else
 {
@@ -34,7 +34,7 @@ else
 		}
 	}
 
-	protected async Task GenerateGuidAsync()
+	protected async Task OnGuidRequestAsync()
 	{
 		_guidDisplayText = Guid.NewGuid().ToString();
 		await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guidDisplayText);
