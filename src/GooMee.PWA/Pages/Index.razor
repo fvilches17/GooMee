@@ -8,7 +8,7 @@
 }
 else
 {
-	<p>Clipboard API not supported... Upgrade your browser or application environment.</p>
+	<p>@_clipboardApiNotSupportedMessage</p>
 }
 
 @code
@@ -16,14 +16,20 @@ else
 	private Guid _guid = Guid.NewGuid();
 	private IJSObjectReference? _clipboardJsModule;
 	private bool _isClipboardApiSupported;
+    private string? _clipboardApiNotSupportedMessage;
 
 	[Inject]
-    IJSRuntime Js { get; set; } = null!;
+    private IJSRuntime Js { get; set; } = null!;
 
     protected override async Task OnInitializedAsync()
 	{
 		_clipboardJsModule = await Js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
 		_isClipboardApiSupported = await _clipboardJsModule!.InvokeAsync<bool>("isClipboardApiSupported");
+        if (!_isClipboardApiSupported)
+        {
+            _clipboardApiNotSupportedMessage = "Clipboard API not supported... Upgrade your browser.";
+        }
+        
 	}
 
 	protected void GenerateGuid() => _guid = Guid.NewGuid();
