@@ -1,24 +1,22 @@
 ﻿@page "/"
 
-@if (_isClipboardApiSupported)
-{
-	<section class="guid-display-container">
-	 <div class="guid-display-area " @onclick=@OnGuidRequestAsync onselectstart="return false">
-		<span>@_guidDisplayText</span>
-	 </div>
-	</section>
-}
-else
-{
-	<p>@_clipboardApiNotSupportedDisplayText</p>
-}
+<section class="guid-display-container" tabindex="0"
+		 @ref="@_guidContainerElement"
+		 @onkeydown="@HandleKeyDownAsync"
+		 @onclick=@HandleGuidRequestAsync>
+
+	<div class="guid-display-area">
+		<span onselectstart="return false">@(_guidDisplayText ?? "Tap screen or press g")</span>
+	</div>
+
+</section>
 
 @code
 {
 	private bool _isClipboardApiSupported;
-	private string? _clipboardApiNotSupportedDisplayText;
 	private string? _guidDisplayText;
 	private IJSObjectReference? _clipboardJsModule;
+	private ElementReference _guidContainerElement;
 
 	[Inject]
 	private IJSRuntime Js { get; set; } = null!;
@@ -27,20 +25,31 @@ else
 	{
 		_clipboardJsModule = await Js.InvokeAsync<IJSObjectReference>("import", "./js/clipboard.js");
 		_isClipboardApiSupported = await _clipboardJsModule!.InvokeAsync<bool>("isClipboardApiSupported");
+	}
 
-		if (_isClipboardApiSupported)
+	protected override async Task OnAfterRenderAsync(bool firstRender)
+	{
+		if (firstRender)
 		{
-			_guidDisplayText = "Tap to generate guid...";
-		}
-		else
-		{
-			_clipboardApiNotSupportedDisplayText = "Clipboard API not supported... Upgrade your browser.";
+			await _guidContainerElement.FocusAsync();
 		}
 	}
 
-	protected async Task OnGuidRequestAsync()
+	private async Task HandleGuidRequestAsync()
 	{
 		_guidDisplayText = Guid.NewGuid().ToString();
-		await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guidDisplayText);
+
+		if (_isClipboardApiSupported)
+		{
+			await _clipboardJsModule!.InvokeVoidAsync("writeToClipboard", _guidDisplayText);
+		}
+	}
+
+	private async Task HandleKeyDownAsync(KeyboardEventArgs arg)
+	{
+		if (arg.Key.Equals("G", StringComparison.OrdinalIgnoreCase))
+		{
+			await HandleGuidRequestAsync();
+		}
 	}
 }
