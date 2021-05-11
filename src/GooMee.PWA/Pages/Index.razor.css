@@ -1,0 +1,21 @@
+﻿.guid-display-container {
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.guid-display-area {
+    background-image: url('img/goomee.png');
+    background-size: contain;
+    background-repeat: no-repeat;
+    height: 200px;
+    width: 80vw;
+    max-width: 600px;
+    padding-top: 3.4%;
+    text-align: center;
+    font-size: min(3.5vw, 21px);
+    font-family: 'Pangolin', cursive;
+    color: #3e3c3c;
+    cursor: copy;
+}

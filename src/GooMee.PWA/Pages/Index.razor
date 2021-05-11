@@ -2,7 +2,11 @@
 
 @if (_isClipboardApiSupported)
 {
-	<p class="cursor-copy" @onclick=@OnGuidRequestAsync onselectstart="return false">@_guidDisplayText</p>
+	<section class="guid-display-container">
+	 <div class="guid-display-area " @onclick=@OnGuidRequestAsync onselectstart="return false">
+		<span>@_guidDisplayText</span>
+	 </div>
+	</section>
 }
 else
 {
@@ -11,8 +15,8 @@ else
 
 @code
 {
-    private bool _isClipboardApiSupported;
-    private string? _clipboardApiNotSupportedDisplayText;
+	private bool _isClipboardApiSupported;
+	private string? _clipboardApiNotSupportedDisplayText;
 	private string? _guidDisplayText;
 	private IJSObjectReference? _clipboardJsModule;
 
@@ -26,7 +30,7 @@ else
 
 		if (_isClipboardApiSupported)
 		{
-			_guidDisplayText = "Tap or click to generate & copy";
+			_guidDisplayText = "Tap to generate guid...";
 		}
 		else
 		{
